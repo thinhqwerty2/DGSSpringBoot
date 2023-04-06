@@ -1,0 +1,31 @@
+type Cinema{
+    numRows:Int
+    numCols:Int
+    seats:[Seat]
+    listTickets:[Ticket]
+}
+
+type Ticket {
+    token:String
+    seat:Seat
+    state:String
+}
+
+type Seat {
+    row:Int
+    column:Int
+    avail:Boolean
+    price:Int
+}
+#input Seat{
+#    row:Int
+#    column:Int
+#}
+
+type Query  {
+    seats:[Seat]
+}
+type Mutation {
+    purchase(row:Int,col:Int):Seat
+}
+
