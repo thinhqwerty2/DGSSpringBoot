@@ -13,7 +13,7 @@ data class Ticket(
     @JsonIgnore
     var state: String? = "Sold",
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.UUID)
     @Column(name = "id", nullable = false)
     open var token: String = UUID.randomUUID().toString(),
 

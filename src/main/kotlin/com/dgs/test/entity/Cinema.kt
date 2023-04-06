@@ -1,22 +1,23 @@
 package com.dgs.test.entity
 
+import com.dgs.test.constant.SEAT_COLS
+import com.dgs.test.constant.SEAT_ROWS
 import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import jakarta.persistence.*
 import org.hibernate.Hibernate
 import kotlin.jvm.Transient
 
-const val SEAT_ROWS = 9
-const val SEAT_COLS = 9
+
 
 @Entity
 data class Cinema(
     @JsonProperty("total_rows") val numRows: Int = SEAT_ROWS,
 
-    @JsonProperty("total_columns") val numCol: Int = SEAT_COLS,
+    @JsonProperty("total_columns") val numCols: Int = SEAT_COLS,
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "id", nullable = false)
     var id: Long? = null,
     @OneToMany(mappedBy = "cinemaId", cascade = [CascadeType.ALL], orphanRemoval = true)
