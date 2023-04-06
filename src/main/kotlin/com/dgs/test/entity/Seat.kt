@@ -8,10 +8,8 @@ import java.util.UUID
 
 @Entity
 data class Seat(
-    @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
-    @Column(name = "id", nullable = false)
-     var id: Long? = null,
+    @Column
+    val rowSeat: Int=0,
     @Column
     val columnSeat: Int=0,
     @JsonIgnore
@@ -19,16 +17,19 @@ data class Seat(
     var avail: Boolean = true,
     @Column
     val price:Int=0,
-    @Column
-    val rowSeat: Int=0,
-
-) {
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    @Column(name = "id", nullable = false)
+     var id: Long? = null,
+    @JsonIgnore
     @ManyToOne
     @JoinColumn(name = "cinema_id")
-    open var cinemaId: Cinema? = null
-
+     var cinemaId: Cinema? = null,
+    @JsonIgnore
     @OneToMany(mappedBy = "seat", orphanRemoval = true)
-    open var tickets: MutableSet<Ticket> = mutableSetOf()
+    var tickets: MutableSet<Ticket> = mutableSetOf()
+
+) {
 
     constructor():this(id=null)
 

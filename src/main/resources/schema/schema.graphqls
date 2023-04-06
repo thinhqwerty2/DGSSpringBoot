@@ -1,4 +1,5 @@
 type Cinema{
+    id:ID!
     numRows:Int
     numCols:Int
     seats:[Seat]
@@ -6,26 +7,27 @@ type Cinema{
 }
 
 type Ticket {
-    token:String
+    token:ID!
     seat:Seat
     state:String
 }
 
 type Seat {
-    row:Int
-    column:Int
+    id:ID!
+    rowSeat:Int
+    columnSeat:Int
     avail:Boolean
     price:Int
 }
-#input Seat{
-#    row:Int
-#    column:Int
-#}
 
 type Query  {
-    seats:[Seat]
+    cinemaById(id:Float):Cinema
 }
 type Mutation {
-    purchase(row:Int,col:Int):Seat
+    purchase(rowSeat:Int,colSeat:Int,cinemaId:Float):Ticket
+}
+input SeatInput{
+    row:Int
+    col:Int
 }
 
