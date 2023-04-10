@@ -2,29 +2,42 @@ package com.dgs.test.controller
 
 
 //import cinema.entity.*
+
+
 import com.dgs.test.constant.CINEMA_NUM
 import com.dgs.test.constant.SEAT_COLS
 import com.dgs.test.constant.SEAT_ROWS
+import com.dgs.test.email.EmailDetails
+import com.dgs.test.email.EmailService
 import com.dgs.test.entity.*
 import com.dgs.test.service.CinemaService
 import com.dgs.test.service.TicketService
-
-
 import org.springframework.http.HttpStatus
 import org.springframework.http.ResponseEntity
-import org.springframework.web.bind.annotation.GetMapping
-import org.springframework.web.bind.annotation.PostMapping
-import org.springframework.web.bind.annotation.RequestBody
-import org.springframework.web.bind.annotation.RequestParam
-import org.springframework.web.bind.annotation.RestController
-import java.lang.Exception
+import org.springframework.web.bind.annotation.*
+
 
 @RestController
 class Controller(
 //    private val cinema: Cinema = Cinema(),
-    val cinemaService: CinemaService,
-    val ticketService: TicketService,
+    val cinemaService: CinemaService, val ticketService: TicketService, val emailService: EmailService
 ) {
+    @PostMapping("/sendMailHtmlFormat")
+    fun sendMailHtmlFormat(@RequestBody details: EmailDetails): String? {
+        return emailService.sendMailHtmlFormat(details)
+    }
+    @PostMapping("/sendMail")
+    fun sendMail(@RequestBody details: EmailDetails): String? {
+        return emailService.sendSimpleMail(details)
+    }
+
+    // Sending email with attachment
+    @PostMapping("/sendMailWithAttachment")
+    fun sendMailWithAttachment(
+        @RequestBody details: EmailDetails
+    ): String? {
+        return emailService.sendMailWithAttachment(details)
+    }
 
     @GetMapping("/seats", produces = ["application/json"])
     fun getSeatInfo(): ResponseEntity<List<Any>> {
@@ -47,28 +60,28 @@ class Controller(
                 }
             }
             return "Init Success"
-        } catch (e:Exception){
+        } catch (e: Exception) {
             return "Init failed because ${e.message}"
         }
     }
 
     @PostMapping("/purchase", produces = ["application/json"], consumes = ["application/json"])
-    fun purchase(@RequestBody seat: Seat,@RequestParam("cinemaID", required = false) cinemaId:Long=1): ResponseEntity<Any> {
+    fun purchase(
+        @RequestBody seat: Seat, @RequestParam("cinemaID", required = false) cinemaId: Long = 1
+    ): ResponseEntity<Any> {
         val row = seat.rowSeat - 1
         val column = seat.columnSeat - 1
-        val seatInDB:Seat?=cinemaService.getDetailsSeatBySeatAndCinemaId(seat,cinemaId)
+        val seatInDB: Seat? = cinemaService.getDetailsSeatBySeatAndCinemaId(seat, cinemaId)
         return when {
-            row !in 0 until SEAT_ROWS || column !in 0 until SEAT_COLS ->
-                ResponseEntity.status(400)
-                    .body(mapOf("error" to "The number of a row or a column is out of bounds!"))
+            row !in 0 until SEAT_ROWS || column !in 0 until SEAT_COLS -> ResponseEntity.status(400)
+                .body(mapOf("error" to "The number of a row or a column is out of bounds!"))
 
-            seatInDB?.avail==false ->
-                ResponseEntity.status(400)
-                    .body(mapOf("error" to "The ticket has been already purchased!"))
+            seatInDB?.avail == false -> ResponseEntity.status(400)
+                .body(mapOf("error" to "The ticket has been already purchased!"))
 
             else -> {
                 seatInDB?.avail = false
-                val ticket= Ticket(seat = seatInDB)
+                val ticket = Ticket(seat = seatInDB)
                 ticketService.saveTicket(ticket)
                 ResponseEntity.status(200).body(ticket)
             }

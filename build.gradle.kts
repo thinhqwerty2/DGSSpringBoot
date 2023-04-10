@@ -23,6 +23,11 @@ dependencies {
     implementation("com.netflix.graphql.dgs:graphql-dgs-spring-boot-starter")
     implementation ("com.h2database:h2")
     implementation ("org.springframework.boot:spring-boot-starter-data-jpa")
+    implementation("org.springframework.boot:spring-boot-starter-mail:3.0.5")
+    compileOnly("org.projectlombok:lombok:1.18.26")
+    // https://mvnrepository.com/artifact/javax.servlet/javax.servlet-api
+    compileOnly("javax.servlet:javax.servlet-api:4.0.1")
+
 //    implementation group: 'org.hibernate', name: 'hibernate-validator', version: '6.1.0.Final'
     testImplementation("org.springframework.boot:spring-boot-starter-test")
 }
